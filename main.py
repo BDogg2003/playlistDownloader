@@ -8,6 +8,14 @@ from tkinter import ttk
 
 import os
 
+"""
+#TODO
+
+- figure out error handing on the index bar in case of non-string entry
+    
+"""
+
+
 music_folder = "mus/" # on windows, include the last '/' or else the program breaks
 video_folder = "vid/" # on windows, include the last '/' or else the program breaks
 
@@ -46,13 +54,15 @@ def want_audio(url: str, mode: int, i:int = 1) -> None:
         audio.download_audio("")
     else:
         p = pl(url)
+        if (len(p) == 0):
+            playlistEmptyPopup()
+
         for vid in p.video_urls:
             audio = YouTubeVideo(vid)
             audio.download_audio("{}. ".format(i))
             print("next")
             i += 1
         print("done")
-        
         
     #Rename files to mp3
     path = music_folder
@@ -69,6 +79,8 @@ def want_video(url: str, mode: int, i: int = 1) -> None:
         video.download_video("")
     else:
         p = pl(url)
+        if (len(p) == 0):
+            playlistEmptyPopup()
         for vid in p.video_urls:
             video = YouTubeVideo(vid)
             video.download_video("{}. ".format(i))
@@ -76,6 +88,13 @@ def want_video(url: str, mode: int, i: int = 1) -> None:
             i += 1
         print("done")
             
+def playlistEmptyPopup():
+    top = Toplevel()
+    top.title("Warning")
+    Label(top, text = "Warning: Playlist is empty. Make sure the link is correct and that the playlist is **PUBLIC or UNLISTED**").pack()
+    top.mainloop()
+
+
 #Kinter gui
 def GUI() -> None:
     req = tk.Tk()
